@@ -21,21 +21,17 @@ public class ClientFlightService {
     	
     	List<Clientflight> clientFlights = repository.findByIdentificationContaining(identification);
     	
-    	if(clientFlights.stream().count() > 0) {
-    		return clientFlights;
-    	}else {
+    	if(clientFlights.isEmpty()) {    		
     		throw new AirlineException("El cliente no ha realizado reservas");
+    	}else {
+    		return clientFlights;
     	}
         
     }
     
     public ResponseflightReserve saveReserve(RequestflightReserve request) throws AirlineException {
     	
-    	if(repository.findByDateContaining(request.getDate(),request.getIdClient()).stream().count() > 0) {
-    		
-    		throw new AirlineException("No puede realizar mas de una reserva por dia");
-    		
-    	}else {
+    	if(repository.findByDateContaining(request.getDate(),request.getIdClient()).isEmpty()) {
     		
     		Clientflight  response = repository.save(new Clientflight(request.getIdClient(), request.getOrigin(), request.getDestination(), 
     				request.getDate(),request.getTime(),request.getPrice()));
@@ -43,6 +39,10 @@ public class ClientFlightService {
         	return new ResponseflightReserve("Reserva realizada exitosamente para la fecha: "+response.getDate()+" "+response.getTime()
         				+", con destino a "+response.getDestination()+" desde "+response.getOrigin()+", por un valor de: "+response.getPrice()
         				+", para el cliente con cedula: "+response.getIdentification());
+    		
+    	}else {
+    		
+    		throw new AirlineException("No puede realizar mas de una reserva por dia");
     	}
     	
     }
