@@ -18,5 +18,4 @@ public interface ClientFlightRepository extends CrudRepository<Clientflight, Lon
 	@Query("select c from Clientflight c where c.date = :date AND c.identification=:identification")	
 	List<Clientflight> findByDateContaining(@Param("date") Date date,@Param("identification") String identification);
 	
-	<S extends Clientflight> S save(Clientflight entity);
 }
